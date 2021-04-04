@@ -1,9 +1,11 @@
-const express = require('express')
-const app = express()
-// const bodyParser = require('body-parser')
-const userRoute = require("./route/user.route")
+require('dotenv').config()
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const userRoute = require("./route/user.route");
+const config = require('./config')[process.env.NODE_ENV];
 
-const port = 3030
+const port = config.PORT;
 
 app.use((req, res, next) => {
         res.header('Access-Control-Allow-Origin', '*');
@@ -17,6 +19,12 @@ app.get('/', (req, res) => {
         res.send('hello world')
 })
 
-app.listen(port, () => {
+mongoose.connect(config.DB_URL, {useNewUrlParser: true, useUnifiedTopology: true});
+const connection = mongoose.connection;
+connection.on('error', console.error.bind(console, 'connection error:'));
+connection.once('open', function() {
+  console.log('connected to db')
+  app.listen(port, () => {
         console.log(`server start @ ${port}`)
 })
+});
