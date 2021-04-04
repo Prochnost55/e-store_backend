@@ -23,6 +23,7 @@ router.post('/login', async function (req, res) {
                         }else if(!Array.isArray(data) || !data.length){
                                 return res.status(401).json({message: "User doesn't exist"})
                         }else{
+                                data[0].password = null;
                                 res.status(200).json(data[0])
                         }
                 })
